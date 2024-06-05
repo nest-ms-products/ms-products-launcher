@@ -4,3 +4,6 @@
 [submodule "ms-products"]
 	path = ms-products
 	url = https://github.com/nest-ms-products/ms-products.git
+[submodule "ms-orders"]
+	path = ms-orders
+	url = https://github.com/nest-ms-products/ms-orders.git
