@@ -1,9 +1,9 @@
 [submodule "client-gateway"]
 	path = client-gateway
-	url = https://github.com/nest-ms-products/client-gateway.git
+	url = git@github.com:nest-ms-products/client-gateway.git
 [submodule "ms-products"]
 	path = ms-products
-	url = https://github.com/nest-ms-products/ms-products.git
+	url = git@github.com:nest-ms-products/ms-products.git
 [submodule "ms-orders"]
 	path = ms-orders
-	url = https://github.com/nest-ms-products/ms-orders.git
+	url = git@github.com:nest-ms-products/ms-orders.git
