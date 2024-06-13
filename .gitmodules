@@ -7,3 +7,6 @@
 [submodule "ms-orders"]
 	path = ms-orders
 	url = git@github.com:nest-ms-products/ms-orders.git
+[submodule "ms-payments"]
+	path = ms-payments
+	url = git@github.com:nest-ms-products/ms-payments.git
