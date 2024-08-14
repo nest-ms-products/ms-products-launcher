@@ -1,0 +1,80 @@
+services:
+  nats-server:
+    image: nats:latest
+    ports:
+      - "4222:4222"
+      - "8222:8222"
+
+  client-gateway:
+    build:
+      context: ./client-gateway
+      dockerfile: dockerfile.prod
+    image: client-gateway-prod
+    ports:
+      - "${CLIENT_GATEWAY_PORT}:4000"
+    environment:
+      - PORT=4000
+      - NATS_SERVERS=nats://nats-server:4222
+
+  ms-auth:
+    build:
+      context: ./ms-auth
+      dockerfile: dockerfile.prod
+    image: ms-auth-prod
+    ports:
+      - ${MS_AUTH_PORT}:${MS_AUTH_PORT}
+    environment:
+      - PORT=${MS_AUTH_PORT}
+      - NATS_SERVERS=nats://nats-server:4222
+      - DATABASE_URL=${AUTH_DATABASE_URL}
+      - JWT_SECRET=${JWT_SECRET}
+
+  ms-products:
+    build:
+      context: ./ms-products
+      dockerfile: dockerfile.prod
+    image: ms-products-prod
+    environment:
+      - PORT=4001
+      - DATABASE_URL=file:./dev.db
+      - NATS_SERVERS=nats://nats-server:4222
+
+  # ms-orders:
+  #   depends_on:
+  #     - orders-db
+  #   build: ./ms-orders
+  #   volumes:
+  #     - ./ms-orders:/app
+  #     - /app/node_modules
+  #   command: npm run start:dev
+  #   environment:
+  #     - PORT=4002
+  #     - DATABASE_URL=postgresql://postgres:123456@orders-db:5432/ordersdb?schema=public
+  #     - NATS_SERVERS=nats://nats-server:4222
+
+  # orders-db:
+  #   container_name: orders_database
+  #   image: postgres:16.2
+  #   restart: always
+  #   volumes:
+  #     - ./ms-orders/data/postgres:/var/lib/postgresql/data
+  #   ports:
+  #     - 5434:5432
+  #   environment:
+  #     - POSTGRES_USER=postgres
+  #     - POSTGRES_PASSWORD=123456
+  #     - POSTGRES_DB=ordersdb
+
+  ms-payments:
+    build:
+      context: ./ms-payments
+      dockerfile: dockerfile.prod
+    ports:
+      - ${MS_PAYMENTS_PORT}:${MS_PAYMENTS_PORT}
+    environment:
+      - PORT=${MS_PAYMENTS_PORT}
+      - NATS_SERVERS=nats://nats-server:4222
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - STRIPE_ENDPOINT_SECRET=${STRIPE_ENDPOINT_SECRET}
+      - STRIPE_SUCCESS_URL=${STRIPE_SUCCESS_URL}
+      - STRIPE_CANCEL_URL=${STRIPE_CANCEL_URL}
