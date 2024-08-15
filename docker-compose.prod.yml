@@ -39,31 +39,17 @@ services:
       - DATABASE_URL=file:./dev.db
       - NATS_SERVERS=nats://nats-server:4222
 
-  # ms-orders:
-  #   depends_on:
-  #     - orders-db
-  #   build: ./ms-orders
-  #   volumes:
-  #     - ./ms-orders:/app
-  #     - /app/node_modules
-  #   command: npm run start:dev
-  #   environment:
-  #     - PORT=4002
-  #     - DATABASE_URL=postgresql://postgres:123456@orders-db:5432/ordersdb?schema=public
-  #     - NATS_SERVERS=nats://nats-server:4222
-
-  # orders-db:
-  #   container_name: orders_database
-  #   image: postgres:16.2
-  #   restart: always
-  #   volumes:
-  #     - ./ms-orders/data/postgres:/var/lib/postgresql/data
-  #   ports:
-  #     - 5434:5432
-  #   environment:
-  #     - POSTGRES_USER=postgres
-  #     - POSTGRES_PASSWORD=123456
-  #     - POSTGRES_DB=ordersdb
+  ms-orders:
+    build:
+      context: ./ms-orders
+      dockerfile: dockerfile.prod
+      args:
+        - DATABASE_URL=${DATABASE_URL}
+    image: ms-orders-prod
+    environment:
+      - PORT=4002
+      - DATABASE_URL=${DATABASE_URL}
+      - NATS_SERVERS=nats://nats-server:4222
 
   ms-payments:
     build:
